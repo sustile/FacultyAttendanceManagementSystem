@@ -10,15 +10,85 @@ export default function RecordTag({data}) {
           ...styles.mainCont,
         }}>
         <View style={styles.mainCont.header}>
-          <Icon source="map-marker" color={'rgba(38, 38, 44, 0.6)'} size={20} />
-          <Text variant="titleSmall" style={{color: 'rgba(38, 38, 44, 0.6)'}}>
-            {Number(data.location.latitude).toFixed(2)},{' '}
-            {Number(data.location.longitude).toFixed(2)}
-          </Text>
+          <View style={styles.mainCont.header.headerCont}>
+            <Icon
+              source="map-marker"
+              color={'rgba(38, 38, 44, 0.6)'}
+              size={20}
+            />
+            <Text variant="titleSmall" style={{color: 'rgba(38, 38, 44, 0.6)'}}>
+              {Number(data.location.latitude).toFixed(2)},{' '}
+              {Number(data.location.longitude).toFixed(2)}
+            </Text>
+          </View>
+          {data.overallAttendance.status && (
+            <Text
+              variant="titleSmall"
+              style={{
+                color:
+                  data.overallAttendance.status === 'Absent'
+                    ? '#da2c38'
+                    : data.overallAttendance.status === 'Full Day'
+                    ? '#40916c'
+                    : '#fb5607',
+                fontWeight: 'bold',
+              }}>
+              {data.overallAttendance.status}
+            </Text>
+          )}
         </View>
         <Text variant="titleMedium" style={{color: '#08080C'}}>
           {new Date(data.creation).toLocaleString()}
         </Text>
+        {(data.overallAttendance.totalInside ||
+          data.overallAttendance.totalOutside) && (
+          <View style={styles.mainCont.header}>
+            <View style={styles.mainCont.header.headerCont}>
+              {data.overallAttendance.totalInside && (
+                <>
+                  <Text
+                    variant="titleSmall"
+                    style={{
+                      color: 'rgba(38, 38, 44, 0.6)',
+                      fontWeight: 'bold',
+                    }}>
+                    Inside :
+                  </Text>
+                  <Text
+                    variant="titleSmall"
+                    style={{
+                      color: '#40916c',
+                      fontWeight: 'bold',
+                    }}>
+                    {data.overallAttendance.totalInside}
+                  </Text>
+                </>
+              )}
+            </View>
+            <View style={styles.mainCont.header.headerCont}>
+              {data.overallAttendance.totalOutside && (
+                <>
+                  <Text
+                    variant="titleSmall"
+                    style={{
+                      color: 'rgba(38, 38, 44, 0.6)',
+                      fontWeight: 'bold',
+                    }}>
+                    Outside :
+                  </Text>
+                  <Text
+                    variant="titleSmall"
+                    style={{
+                      color: '#da2c38',
+                      fontWeight: 'bold',
+                    }}>
+                    {data.overallAttendance.totalOutside}
+                  </Text>
+                </>
+              )}
+            </View>
+          </View>
+        )}
         {data?.updates?.length > 0 && (
           <View style={styles.mainCont.updatesCont}>
             {data.updates.map((el, i) => {
@@ -85,7 +155,14 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       columnGap: 6,
-      justifyContent: 'flex-start',
+      justifyContent: 'space-between',
+      width: '100%',
+      headerCont: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        columnGap: 6,
+        justifyContent: 'flex-start',
+      },
     },
 
     updatesCont: {
